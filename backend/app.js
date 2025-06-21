@@ -2,6 +2,8 @@ import connectDB from "./src/configs/mongodb.config.js"
 import shortUrl from "./src/routes/short_url.route.js"
 import { redirectFromShortUrl } from "./src/controllers/short_url.controller.js";
 import errorHandler from './src/utils/errorhandler.js';
+import cors from "cors";
+
 
 import dotenv from "dotenv";
 dotenv.config("./.env")
@@ -9,6 +11,7 @@ dotenv.config("./.env")
 
 import express from "express"
 const app = express()
+app.use(cors())
 
 app.use(express.json());  // Accepting Body parser
 app.use(express.urlencoded({extended:true})) // hiding the form data shared through url
