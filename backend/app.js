@@ -1,6 +1,7 @@
 import connectDB from "./src/configs/mongodb.config.js"
 import shortUrl from "./src/routes/short_url.route.js"
 import { redirectFromShortUrl } from "./src/controllers/short_url.controller.js";
+import errorHandler from './src/utils/errorhandler.js';
 
 import dotenv from "dotenv";
 dotenv.config("./.env")
@@ -21,7 +22,9 @@ app.use("/api/create", shortUrl)
 //GET route - Redirection
 app.get("/:id",redirectFromShortUrl)
 
-
+// Handling Errors
+// Global error middleware
+app.use(errorHandler);
 
 app.listen(3000,()=>{
     connectDB()
