@@ -3,6 +3,8 @@ import shortUrl from "./src/routes/short_url.route.js"
 import  authRoutes  from "./src/routes/auth.routes.js";
 import { redirectFromShortUrl } from "./src/controllers/short_url.controller.js";
 import errorHandler from './src/utils/errorhandler.js';
+import cookieParser from "cookie-parser";
+import { attachUser } from "./src/utils/attachUser.js";
 import cors from "cors";
 
 
@@ -16,8 +18,10 @@ app.use(cors())
 
 app.use(express.json());  // Accepting Body parser
 app.use(express.urlencoded({extended:true})) // hiding the form data shared through url
+app.use(cookieParser())
 
 
+app.use(attachUser)
 
 //POST route -  Create a Short URL
 app.use("/api/create", shortUrl)

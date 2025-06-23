@@ -3,24 +3,21 @@ import { shorturlServiceswithoutuser, shorturlServiceswithuser } from "../servic
 
 export const createShortUrl = async (req, res, next) => {
     try {
-        const { url } = req.body
-        const shorturl = await shorturlServiceswithoutuser(url)
+        let shorturl
+        if (req.user) {
+            const { url } = req.body
+            shorturl = await shorturlServiceswithuser(url)
+        } else {
+            const { url } = req.body
+            shorturl = await shorturlServiceswithoutuser(url)
+        }
         res.send(process.env.APP_URL + shorturl)
     } catch (error) {
         next(error)
     }
 }
-export const createShortUrlAuth = async (req, res, next) => {
-    try {
-        const { url } = req.body
-        const shorturl = await shorturlServiceswithuser(url, req.user._id)
-        res.send(process.env.APP_URL + shorturl)
-    }catch(error){
-        next(error)
-    }
-}
 
-export const redirectFromShortUrl = async(req, res, next) => {
+export const redirectFromShortUrl = async (req, res, next) => {
     const { id } = req.params
     const url = await getshortUrl(id)
     console

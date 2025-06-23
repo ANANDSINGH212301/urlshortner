@@ -18,5 +18,5 @@ export const loginUserServices = async (email, password) => {
     const user = await findUserByEmail({email: email})
     if (!user || user.password !== password) { throw new NotFoundError("Invalid Credentials") }
     const token = await signToken({id: user._id})
-    return token
+    return {token,user}
 }
