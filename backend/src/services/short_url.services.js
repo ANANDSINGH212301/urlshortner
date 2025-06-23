@@ -8,18 +8,19 @@ export const shorturlServiceswithoutuser = async (url) => {
     if (!shortpart) {
         throw new AppError('User not found', 404);
     }
-    saveShortUrl(shortpart, url)
+    await saveShortUrl(shortpart, url)
     return shortpart
 }
 export const shorturlServiceswithuser = async (url, userId, slug = null) => {
+    
     const shortpart = slug || generateNanoId(7)
-    const exist = await getCoustomShortUrl(slug)
+    const exist = await getCoustomShortUrl(shortpart)
     if (exist) {
         throw new AppError('coustom url already exist');
     }
     if (!shortpart) {
         throw new AppError('User not found', 404);
     }
-    saveShortUrl(shortpart, url, userId)
+    await saveShortUrl(shortpart, url, userId)
     return shortpart
 }

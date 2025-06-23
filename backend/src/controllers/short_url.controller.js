@@ -2,13 +2,12 @@ import { getshortUrl } from "../dao/short_url.js";
 import { shorturlServiceswithoutuser, shorturlServiceswithuser } from "../services/short_url.services.js";
 
 export const createShortUrl = async (req, res, next) => {
+    const { url } = req.body
     try {
         let shorturl
-        if (req.user) {
-            const { url } = req.body
-            shorturl = await shorturlServiceswithuser(url)
+        if (req.userId) {
+            shorturl = await shorturlServiceswithuser(url, req.userId)
         } else {
-            const { url } = req.body
             shorturl = await shorturlServiceswithoutuser(url)
         }
         res.send(process.env.APP_URL + shorturl)
@@ -20,18 +19,17 @@ export const createShortUrl = async (req, res, next) => {
 export const redirectFromShortUrl = async (req, res, next) => {
     const { id } = req.params
     const url = await getshortUrl(id)
-    console
     if (url) {
         res.redirect(url.full_url);
     } else {
         res.status(404).send("Not Found")
     }
 }
-export const createCoustomShortUrl = async (req, res, next) => {
+export const createCustomShortUrl = async (req, res, next) => {
     const { url, slug } = req.body
     let shorturl;
-    if (req.user) {
-        shorturl = await shorturlServiceswithuser(url, req.user._id, slug)
+    if (req.userId) {
+        shorturl = await shorturlServiceswithuser(url, req.userId, slug)
     } else {
         shorturl = await shorturlServiceswithoutuser(url, slug)
     }

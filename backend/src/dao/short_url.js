@@ -9,7 +9,7 @@ export const saveShortUrl = async (shortUrl, longUrl, userId) => {
         if (userId) {
             newUrl.user = userId;
         }
-        newUrl.save()
+        await newUrl.save()
     } catch (error) {
         throw error
     }

@@ -13,7 +13,7 @@ export const attachUser = async(req,res, next) =>{
         if (!user) {
             return next()
         }
-        req.user = user
+        req.userId = user._id
         next()
     } catch (error) {
        return next()
