@@ -1,6 +1,5 @@
 import { getshortUrl } from "../dao/short_url.js";
 import { shorturlServiceswithoutuser, shorturlServiceswithuser } from "../services/short_url.services.js";
-import { wrapAsync } from "../utils/trycatchWrapper.js";
 
 export const createShortUrl = async (req, res, next) => {
     try {
@@ -23,9 +22,8 @@ export const createShortUrlAuth = async (req, res, next) => {
 
 export const redirectFromShortUrl = async(req, res, next) => {
     const { id } = req.params
-    console.log(await getshortUrl(id))
     const url = await getshortUrl(id)
-    console.log(url)
+    console
     if (url) {
         res.redirect(url.full_url);
     } else {
@@ -34,7 +32,6 @@ export const redirectFromShortUrl = async(req, res, next) => {
 }
 export const createCoustomShortUrl = async (req, res, next) => {
     const { url, slug } = req.body
-    console.log("hhee")
     let shorturl;
     if (req.user) {
         shorturl = await shorturlServiceswithuser(url, req.user._id, slug)
