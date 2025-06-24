@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { loginuser } from "../Apis/user.api.js";
 import { withAsyncHandler } from "../utils/asyncWrapper";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import login from "../store/slice/authSlice.js"
 
 const LoginForm = ({ state }) => {
   const [email, setEmail] = useState("");
@@ -9,6 +10,7 @@ const LoginForm = ({ state }) => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const dispatch = useDispatch();
 
   const auth = useSelector((state) => {
     return state.auth;
@@ -35,7 +37,7 @@ const LoginForm = ({ state }) => {
 
     try {
       const data= await loginUserHandler(email, password);
-      console.log(data.user);
+      dispatch(login(data.user));
       setLoading(false);
     } catch (error) {
       setError("Email and password are required :" + error);
