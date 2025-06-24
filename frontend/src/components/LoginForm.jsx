@@ -38,8 +38,8 @@ const LoginForm = ({ state }) => {
   };
 
   return (
-    <div className="h-[100vh] flex justify-center items-center">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-2xl">
+    <div className="h-[90vh] bg-gray-100 flex justify-center  items-center">
+      <div className="bg-white p-8 rounded-lg  w-full max-w-md">
         <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
           Sign In
         </h2>

@@ -46,11 +46,6 @@ const Url_form = () => {
       >
         Shorten URL
       </button>
-      {/* {error && (
-          <div className="mt-4 p-3 bg-red-100 text-red-700 rounded-md">
-            {error}
-          </div>
-        )} */}
 
       {shortUrl && (
         <div className="mt-6">
