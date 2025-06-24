@@ -4,6 +4,9 @@ import { wrapAsync } from "../utils/trycatchWrapper.js"
 export const findUserByEmail = async (email) => {
     return await userModel.findOne(email)
 }
+export const findUserByEmailAndPassword = async (email) => {
+    return await userModel.findOne(email).select("+password")
+}
 export const findUserById = async (id) => {
     return await userModel.findOne({ id })
 }

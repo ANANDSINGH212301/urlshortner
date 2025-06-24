@@ -1,18 +1,23 @@
 import React, { useState } from "react";
 import { loginuser } from "../Apis/user.api.js";
 import { withAsyncHandler } from "../utils/asyncWrapper";
+import { useSelector } from "react-redux";
 
 const LoginForm = ({ state }) => {
-  const [email, setEmail] = useState("aksgo818@gmail.com");
-  const [password, setPassword] = useState("anand2005");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
+  const auth = useSelector((state) => {
+    return state.auth;
+  });
+
   const loginUserHandler = withAsyncHandler(
     async (email, password) => {
-      await loginuser(email, password);
-      console.log("done");
+      const res = await loginuser(email, password);
+      return res.data  
     },
     {
       onError: (err) => {
@@ -28,13 +33,17 @@ const LoginForm = ({ state }) => {
     e.preventDefault();
     setError("");
 
+    try {
+      const data= await loginUserHandler(email, password);
+      console.log(data.user);
+      setLoading(false);
+    } catch (error) {
+      setError("Email and password are required :" + error);
+    }
     if (!email || !password) {
-      setError("Email and password are required");
       return;
     }
-
     setLoading(true);
-    await loginUserHandler(email, password);
   };
 
   return (
