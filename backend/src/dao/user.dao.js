@@ -1,4 +1,5 @@
 import userModel from "../models/user.model.js"
+import shortSchema from "../models/shortner.model.js"
 
 export const findUserByEmail = async (email) => {
     return await userModel.findOne(email)
@@ -15,6 +16,14 @@ export const createUser = async (name, email, password) => {
         const newUser = new userModel({ name, email, password })
         const savedUser = await newUser.save()
         return savedUser
+    } catch (error) {
+        throw error
+    }
+}
+export const getAllUserUrl = async (id) => {
+    try {
+        const urls = await shortSchema.find({ user: id })
+        return urls
     } catch (error) {
         throw error
     }

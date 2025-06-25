@@ -12,7 +12,8 @@ const UserLinks = () => {
       try {
         setLoading(true);
         const data = await getUserUrls();
-        setLinks(data || []);
+        setLinks(data.urls);
+        console.log(links)
         setError("");
       } catch (err) {
         console.error("Failed to fetch user links:", err);
@@ -23,10 +24,10 @@ const UserLinks = () => {
     };
 
     fetchLinks();
-  }, []);
+  },[]);
 
   const handleCopy = (url, id) => {
-    navigator.clipboard.writeText(url);
+    navigator.clipboard.writeText("http://localhost:3000/"+ url);
     setCopiedId(id);
     setTimeout(() => {
       setCopiedId(null);
@@ -92,9 +93,6 @@ const UserLinks = () => {
               </div>
               <div className="flex justify-between text-xs text-gray-500">
                 <span>Clicks: {link.clicks || 0}</span>
-                <span>
-                  {new Date(link.createdAt).toLocaleDateString()}
-                </span>
               </div>
             </div>
           ))}
