@@ -1,40 +1,40 @@
-import React, { useState, useEffect } from "react";
-import { Link } from "@tanstack/react-router";
+import React, { useState} from "react";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { useSelector, useDispatch } from "react-redux";
+import { logout } from "../store/slice/authSlice.js";
+import { logoutuser } from "../Apis/user.api.js";
+import { withAsyncHandler } from "../utils/asyncWrapper.js";
 
 const Navbar = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [username, setUsername] = useState("");
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  useEffect(() => {
-    // Check if user is authenticated by looking for the token cookie
-    const checkAuth = () => {
-      const hasCookie = document.cookie.includes("accessToken");
-      setIsAuthenticated(hasCookie);
-      
-      // Get username from localStorage if available
-      if (hasCookie) {
-        try {
-          const userData = JSON.parse(localStorage.getItem("user"));
-          setUsername(userData?.name || "User");
-        } catch (error) {
-          console.error("Error parsing user data:", error);
-        }
+  // Get auth state from Redux store
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
+  const username = user?.name || "User";
+  
+  const logoutHandler = withAsyncHandler(
+    async () => {
+      return await logoutuser();
+    },
+    {
+      onError: (err) => {
+        console.error("Logout failed:", err);
       }
-    };
-    
-    checkAuth();
-  }, []);
+    }
+  );
 
   const handleLogout = async () => {
     try {
-      // Clear cookies and localStorage
-      document.cookie = "accessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-      localStorage.removeItem("user");
-      setIsAuthenticated(false);
-      
-      // Redirect to home page
-      window.location.href = "/";
+      // Call the logout API
+      await logoutHandler();
+
+      // Dispatch logout action to Redux
+      dispatch(logout());
+
+      // Navigate to home page
+      navigate({ to: "/" });
     } catch (error) {
       console.error("Logout failed:", error);
     }
@@ -51,52 +51,54 @@ const Navbar = () => {
           {/* Logo and brand */}
           <div className="flex items-center">
             <Link to="/" className="flex-shrink-0 flex items-center">
-              <svg 
-                className="h-8 w-8 text-blue-500" 
-                fill="none" 
-                viewBox="0 0 24 24" 
+              <svg
+                className="h-8 w-8 text-blue-500"
+                fill="none"
+                viewBox="0 0 24 24"
                 stroke="currentColor"
               >
-                <path 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round" 
-                  strokeWidth={2} 
-                  d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" 
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
                 />
               </svg>
-              <span className="ml-2 text-xl font-bold text-gray-800">URL Shortener</span>
+              <span className="ml-2 text-xl font-bold text-gray-800">
+                URL Shortener
+              </span>
             </Link>
           </div>
-          
+
           {/* Desktop navigation */}
           <div className="hidden sm:ml-6 sm:flex sm:items-center sm:space-x-4">
-            <Link 
-              to="/" 
+            <Link
+              to="/"
               className="px-3 py-2 text-md font-medium text-gray-700 hover:text-blue-500 rounded-md underline"
               activeProps={{ className: "text-blue-500" }}
             >
               Home
             </Link>
-            
+
             {isAuthenticated && (
-              <Link 
-                to="/dashboard" 
+              <Link
+                to="/dashboard"
                 className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-500 rounded-md"
                 activeProps={{ className: "text-blue-500" }}
               >
                 Dashboard
               </Link>
             )}
-            
+
             {isAuthenticated ? (
               <div className="relative ml-3">
                 <div className="flex items-center">
                   <span className="text-sm font-medium text-gray-700 mr-2">
-                    Hi, {username}
+                    Hi, Mod !!
                   </span>
                   <button
                     onClick={handleLogout}
-                    className="px-4 py-2 text-sm font-medium text-white bg-blue-500 hover:bg-blue-600 rounded-md transition-colors"
+                    className="px-4 py-2 text-sm font-medium text-white bg-red-500 cursor-pointer rounded-md transition-colors"
                   >
                     Logout
                   </button>
@@ -111,7 +113,7 @@ const Navbar = () => {
               </Link>
             )}
           </div>
-          
+
           {/* Mobile menu button */}
           <div className="flex items-center sm:hidden">
             <button
@@ -171,7 +173,7 @@ const Navbar = () => {
             >
               Home
             </Link>
-            
+
             {isAuthenticated && (
               <Link
                 to="/dashboard"
@@ -181,7 +183,7 @@ const Navbar = () => {
                 Dashboard
               </Link>
             )}
-            
+
             {isAuthenticated ? (
               <>
                 <div className="px-3 py-2 text-base font-medium text-gray-700">
