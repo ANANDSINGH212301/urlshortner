@@ -1,20 +1,26 @@
 import React, { useState } from "react";
-import { createShortUrl } from "../Apis/shorturl.api.js";
-import {useSelector} from "react-redux"
+import { createShortUrl, createCustomShortUrl } from "../Apis/shorturl.api.js";
+import { useSelector } from "react-redux";
 
 const Url_form = () => {
   const [url, seturl] = useState("");
-  const [shortUrl, setshortUrl] = useState("");
+  const [shortUrl, setShortUrl] = useState("");
   const [copied, setCopied] = useState(false);
   const [slug, setSlug] = useState("");
-  const {isAuthenticated} = useSelector((state) => state.auth);
-
-
+  const { isAuthenticated } = useSelector((state) => state.auth);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const data = await createShortUrl(url);
-    setshortUrl(data);
+    if (!url) {
+      throw new Error("URL is required");
+    }
+    let data
+    if (isAuthenticated && slug) {
+      data = await createCustomShortUrl(url, slug);
+    } else {
+      data = await createShortUrl(url);
+    }
+    setShortUrl(data);
   };
   const handleCopy = () => {
     navigator.clipboard.writeText(shortUrl);

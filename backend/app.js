@@ -1,7 +1,6 @@
 import connectDB from "./src/configs/mongodb.config.js"
 import shortUrl from "./src/routes/short_url.route.js"
 import authRoutes from "./src/routes/auth.routes.js";
-import urls from "./src/routes/user.route.js"
 import { redirectFromShortUrl } from "./src/controllers/short_url.controller.js";
 import errorHandler from './src/utils/errorhandler.js';
 import cookieParser from "cookie-parser";
@@ -30,7 +29,6 @@ app.use(attachUser)
 //POST route -  Create a Short URL
 app.use("/api/create", shortUrl)
 app.use("/api/auth", authRoutes)
-app.use("/api/user", urls)
 
 
 //GET route - Redirection

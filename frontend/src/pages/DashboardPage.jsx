@@ -1,5 +1,4 @@
 import Url_form from "../components/Url_form";
-import CustomUrlForm from "../components/CoustomUrlForm";
 import UserLinks from "../components/UserLink";
 
 const DashboardPage = () => {
@@ -11,7 +10,7 @@ const DashboardPage = () => {
           <hr />
           <div className="flex items-center justify-center gap-40 mt-15 mb-37">
             <div>
-              <div className="bg-white p-6 rounded-lg shadow-md h-[21rem] w-[27rem]">
+              <div className="bg-white p-6 rounded-lg shadow-md  w-[27rem]">
                 <h2 className="text-xl font-semibold mb-4">Shorten URL</h2>
                 <Url_form />
               </div>
