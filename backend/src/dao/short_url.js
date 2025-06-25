@@ -1,5 +1,4 @@
 import shortSchema from "../models/shortner.model.js"
-import { wrapAsync } from "../utils/trycatchWrapper.js";
 export const saveShortUrl = async (shortUrl, longUrl, userId) => {
     try {
         const newUrl = new shortSchema({

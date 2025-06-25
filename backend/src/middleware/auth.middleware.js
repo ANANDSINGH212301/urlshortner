@@ -8,7 +8,6 @@ export const authMiddleware = async (req, res, next) => {
     }
     try {
         const decoded = await verifyToken(token)
-
         const user = await findUserById(decoded)
         if (!user) {
             return res.status(401).json("Not Authenticated")

@@ -1,5 +1,4 @@
 import userModel from "../models/user.model.js"
-import { wrapAsync } from "../utils/trycatchWrapper.js"
 
 export const findUserByEmail = async (email) => {
     return await userModel.findOne(email)
