@@ -1,25 +1,29 @@
 import React, { useState } from "react";
 import { loginuser } from "../Apis/user.api.js";
 import { withAsyncHandler } from "../utils/asyncWrapper";
-import { useDispatch, useSelector } from "react-redux";
-import login from "../store/slice/authSlice.js"
+import { useDispatch } from "react-redux";
+import { login } from "../store/slice/authSlice.js";
+import { useNavigate } from "@tanstack/react-router";
+
+// import { useSelector } from "react-redux"; 
 
 const LoginForm = ({ state }) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("aksgo818@gmail.com");
+  const [password, setPassword] = useState("anand2005");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const auth = useSelector((state) => {
-    return state.auth;
-  });
-
+  // const auth = useSelector((state) => {
+  //   return state.auth;
+  // });
+  // console.log(auth)
   const loginUserHandler = withAsyncHandler(
     async (email, password) => {
       const res = await loginuser(email, password);
-      return res.data  
+      return res.data;
     },
     {
       onError: (err) => {
@@ -34,18 +38,17 @@ const LoginForm = ({ state }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-
     try {
-      const data= await loginUserHandler(email, password);
-      dispatch(login(data.user));
+      const data = await loginUserHandler(email, password);
       setLoading(false);
+      dispatch(login(data.user));
+      navigate({ to: "/dashboard" });
     } catch (error) {
       setError("Email and password are required :" + error);
     }
     if (!email || !password) {
       return;
     }
-    setLoading(true);
   };
 
   return (

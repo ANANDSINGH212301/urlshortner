@@ -8,6 +8,10 @@ import { Provider } from "react-redux";
 
 const router = createRouter({
   routeTree,
+  context:{
+    queryClient,
+    store
+  }
 });
 
 const queryClient = new QueryClient();

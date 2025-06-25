@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 import { registeruser } from "../Apis/user.api.js";
 import { withAsyncHandler } from "../utils/asyncWrapper";
+import { useNavigate } from "@tanstack/react-router";
+import { useDispatch } from "react-redux";
+import { login } from "../store/slice/authSlice.js";
+
+// import { useSelector } from "react-redux"; 
 
 const RegisterForm = ({ state }) => {
   const [formData, setFormData] = useState({
@@ -11,6 +16,13 @@ const RegisterForm = ({ state }) => {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  // const auth = useSelector((state) => {
+  //   return state.auth;
+  // });
+  // console.log(auth);
 
   const validateForm = () => {
     const newErrors = {};
@@ -66,13 +78,21 @@ const RegisterForm = ({ state }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validateForm()) {
-      setLoading(true);
-      await registerUserHandler(
-        formData.name,
-        formData.email,
-        formData.password
-      );
+    setLoading(true);
+    try {
+      if (validateForm()) {
+        const data = await registerUserHandler(
+          formData.name,
+          formData.email,
+          formData.password
+        );
+        dispatch(login(data.user));
+        navigate({ to: "/dashboard" });
+        setLoading(false);
+      }
+    } catch (error) {
+      setErrors("Email and password are required :" + error);
+      setLoading(false);
     }
   };
 

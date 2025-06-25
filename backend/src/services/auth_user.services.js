@@ -6,7 +6,8 @@ export const registerUserServices = async (name, email, password) => {
     if (user) { throw new ConflictError("User Already Exist") }
     const newUser = await createUser(name, email, password)
     const token = await signToken({ id: newUser._id })
-    return token
+    console.log(token)
+    return { token, user }
 }
 
 export const loginUserServices = async (email, password) => {
