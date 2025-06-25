@@ -6,6 +6,7 @@ import { routeTree } from "./routing/RouteTree.js";
 import { store } from "./store/store.js";
 import { Provider } from "react-redux";
 
+const queryClient = new QueryClient();
 const router = createRouter({
   routeTree,
   context:{
@@ -14,7 +15,6 @@ const router = createRouter({
   }
 });
 
-const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")).render(
   <Provider store={store}>

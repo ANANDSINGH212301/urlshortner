@@ -13,6 +13,6 @@ export const logoutuser = async () => {
     return res;
 }
 export const getCurrentUser = async () => {
-    const {data} = await axiosInstance.post("/api/auth/me");
+    const data = await axiosInstance.get("/api/auth/me");
     return data;
 }

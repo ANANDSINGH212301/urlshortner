@@ -17,9 +17,9 @@ const userSchema = new mongoose.Schema({
     },
     avatar: {
         type: String,
-        require:false,
+        require: false,
         // Add gravatar as default
-        default:"https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y" ,
+        default: "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y",
     },
 });
 
@@ -38,8 +38,13 @@ userSchema.pre("save", async function (next) {
     if (!this.isModified("password")) {
         return next();
     }
-    this.password = await bcrypt.hash(this.password, 10);
-    next();
+    try {
+        this.password = await bcrypt.hash(this.password, 10);
+        next();
+    } catch (error) {
+        next(error);
+    }
+
 });
 
 const userModel = mongoose.model("userModel", userSchema);

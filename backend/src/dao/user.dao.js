@@ -8,7 +8,7 @@ export const findUserByEmailAndPassword = async (email) => {
     return await userModel.findOne(email).select("+password")
 }
 export const findUserById = async (id) => {
-    return await userModel.findOne({ id })
+    return await userModel.findById(id)
 }
 
 export const createUser = async (name, email, password) => {
