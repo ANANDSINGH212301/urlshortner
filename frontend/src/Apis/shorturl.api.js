@@ -9,6 +9,6 @@ export const createCustomShortUrl = async (url, slug) => {
     return data;
 }
 export const getUserUrls = async () => {
-    const {data} = await axiosInstance.get("/api/create");
+    const {data} = await axiosInstance.post("/api/user/urls");
     return data;
 }

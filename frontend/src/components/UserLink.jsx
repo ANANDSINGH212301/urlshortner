@@ -1,29 +1,21 @@
-import React, { useState, useEffect } from "react";
+import React, { useState} from "react";
 import { getUserUrls } from "../Apis/shorturl.api.js";
+import {useQuery} from "@tanstack/react-query"
 
 const UserLinks = () => {
-  const [links, setLinks] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const {
+    data: links,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["userUrls"],
+    queryFn: getUserUrls,
+    refetchInterval: 30000, //30 sec
+    staleTime: 0,
+  });
+  console.log(links)
   const [copiedId, setCopiedId] = useState(null);
-
-  useEffect(() => {
-    const fetchLinks = async () => {
-      try {
-        setLoading(true);
-        const data = await getUserUrls();
-        setLinks(data || []);
-        setError("");
-      } catch (err) {
-        console.error("Failed to fetch user links:", err);
-        setError("Failed to load your links. Please try again later.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchLinks();
-  }, []);
 
   const handleCopy = (url, id) => {
     navigator.clipboard.writeText(url);
@@ -33,7 +25,7 @@ const UserLinks = () => {
     }, 2000);
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="bg-white p-6 rounded-lg shadow-md h-[19.7rem] w-[25rem]">
         <h2 className="text-xl font-semibold mb-4">Your Links</h2>
@@ -44,7 +36,7 @@ const UserLinks = () => {
     );
   }
 
-  if (error) {
+  if (isError) {
     return (
       <div className="bg-white p-6 rounded-lg shadow-md h-[19.7rem] w-[25rem]">
         <h2 className="text-xl font-semibold mb-4">Your Links</h2>
@@ -58,7 +50,7 @@ const UserLinks = () => {
   return (
     <div className="bg-white p-6 rounded-lg shadow-md h-[19.7rem] w-[25rem] overflow-auto">
       <h2 className="text-xl font-semibold mb-4">Your Links</h2>
-      
+
       {links.length === 0 ? (
         <div className="text-center text-gray-500 p-4">
           You haven't created any links yet.
@@ -66,8 +58,8 @@ const UserLinks = () => {
       ) : (
         <div className="space-y-3">
           {links.map((link) => (
-            <div 
-              key={link._id} 
+            <div
+              key={link._id}
               className="p-3 border border-gray-200 rounded-md hover:bg-gray-50"
             >
               <div className="flex justify-between items-start mb-2">
@@ -92,9 +84,7 @@ const UserLinks = () => {
               </div>
               <div className="flex justify-between text-xs text-gray-500">
                 <span>Clicks: {link.clicks || 0}</span>
-                <span>
-                  {new Date(link.createdAt).toLocaleDateString()}
-                </span>
+                <span>{new Date(link.createdAt).toLocaleDateString()}</span>
               </div>
             </div>
           ))}

@@ -1,3 +1,4 @@
+import shortSchema from "../models/shortner.model.js"
 import userModel from "../models/user.model.js"
 import { wrapAsync } from "../utils/trycatchWrapper.js"
 
@@ -19,4 +20,8 @@ export const createUser = async (name, email, password) => {
     } catch (error) {
         throw error
     }
+}
+export const getAllUserUrl = async (id) => {
+    console.log(await shortSchema.find({ user: id }))
+    return await shortSchema.find({ user: id })
 }

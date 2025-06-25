@@ -41,7 +41,9 @@ const LoginForm = ({ state }) => {
     try {
       const data = await loginUserHandler(email, password);
       setLoading(false);
+
       dispatch(login(data.user));
+      
       navigate({ to: "/dashboard" });
     } catch (error) {
       setError("Email and password are required :" + error);
