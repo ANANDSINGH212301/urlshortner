@@ -23,6 +23,7 @@ const LoginForm = ({ state }) => {
   const loginUserHandler = withAsyncHandler(
     async (email, password) => {
       const res = await loginuser(email, password);
+      console.log(res.data.user);
       return res.data;
     },
     {

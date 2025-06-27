@@ -27,7 +27,7 @@ const UserLinks = () => {
   },[]);
 
   const handleCopy = (url, id) => {
-    navigator.clipboard.writeText("http://localhost:3000/"+ url);
+    navigator.clipboard.writeText("https://url-shortner-zict.onrender.com"+ url);
     setCopiedId(id);
     setTimeout(() => {
       setCopiedId(null);

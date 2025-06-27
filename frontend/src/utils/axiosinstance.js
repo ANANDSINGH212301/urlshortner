@@ -3,7 +3,7 @@ import axios from "axios";
 const axiosInstance = axios.create({
   baseURL: import.meta.env.PROD
     ? import.meta.env.VITE_API_URL || window.location.origin
-    : "http://localhost:3000",
+    : "https://url-shortner-zict.onrender.com",
   timeout: 10000, //server timeout
   withCredentials: true
 });

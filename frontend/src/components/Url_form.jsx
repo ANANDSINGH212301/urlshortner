@@ -62,7 +62,7 @@ const Url_form = () => {
           </label>
           <div className="flex items-center">
             <span className="bg-gray-100 px-3 py-2 border border-r-0 border-gray-300 rounded-l-md text-gray-500">
-              http://localhost:3000/
+              https://url-shortner-zict.onrender.com
             </span>
             <input
               type="text"
