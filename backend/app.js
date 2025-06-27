@@ -6,12 +6,15 @@ import errorHandler from './src/utils/errorhandler.js';
 import cookieParser from "cookie-parser";
 import { attachUser } from "./src/utils/attachUser.js";
 import userRouter from "./src/routes/user.route.js";
+import path from "path"
 import cors from "cors";
 
 
 import dotenv from "dotenv";
 dotenv.config("./.env")
 
+
+const __dirname = path.resolve()
 
 import express from "express"
 const app = express()
@@ -37,6 +40,13 @@ app.use("/api/user", userRouter)
 
 //GET route - Redirection
 app.get("/:id", redirectFromShortUrl)
+
+
+app.use(express.static(path.join(__dirname, "/frontend/dist")))
+app.get(/.*/, (req, res) => {
+    res.sendFile(path.join(__dirname, "/frontend/dist/index.html"))
+})
+
 
 // Handling Errors
 // Global error middleware
