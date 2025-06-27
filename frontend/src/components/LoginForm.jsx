@@ -8,8 +8,8 @@ import { useNavigate } from "@tanstack/react-router";
 // import { useSelector } from "react-redux"; 
 
 const LoginForm = ({ state }) => {
-  const [email, setEmail] = useState("aksgo818@gmail.com");
-  const [password, setPassword] = useState("anand2005");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
