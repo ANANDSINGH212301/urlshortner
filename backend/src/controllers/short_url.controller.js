@@ -21,10 +21,8 @@ export const redirectFromShortUrl = async (req, res, next) => {
         console.log("Redirecting short URL:", req.params.id)
         const { id } = req.params
         const url = await getshortUrl(id)
-        console.log("Found URL:", url)
 
         if (url && url.full_url) {
-            console.log("Redirecting to:", url.full_url)
             res.redirect(url.full_url);
         } else {
             console.log("URL not found for ID:", id)

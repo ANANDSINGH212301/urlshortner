@@ -22,7 +22,6 @@ export const getshortUrl = async (id) => {
             { $inc: { clicks: 1 } },
             { returnDocument: 'after' } // Return the updated document
         )
-        console.log("Database result:", url)
         return url
     } catch (error) {
         console.error("Database error in getshortUrl:", error)
