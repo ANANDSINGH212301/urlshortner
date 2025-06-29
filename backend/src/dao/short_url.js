@@ -16,9 +16,16 @@ export const saveShortUrl = async (shortUrl, longUrl, userId) => {
 }
 export const getshortUrl = async (id) => {
     try {
-        const url = await shortSchema.findOneAndUpdate({ short_url: id }, { $inc: { clicks: 1 } })
+        console.log("Searching for short_url:", id)
+        const url = await shortSchema.findOneAndUpdate(
+            { short_url: id },
+            { $inc: { clicks: 1 } },
+            { returnDocument: 'after' } // Return the updated document
+        )
+        console.log("Database result:", url)
         return url
     } catch (error) {
+        console.error("Database error in getshortUrl:", error)
         throw error
     }
 }
