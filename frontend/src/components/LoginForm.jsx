@@ -1,31 +1,27 @@
 import React, { useState } from "react";
 import { loginuser } from "../Apis/user.api.js";
-import { withAsyncHandler } from "../utils/asyncWrapper";
+import { withAsyncHandler } from "../utils/asyncWrapper.js";
 import { useDispatch } from "react-redux";
 import { login } from "../store/slice/authSlice.js";
 import { useNavigate } from "@tanstack/react-router";
+import { toast } from "react-hot-toast";
 
 const LoginForm = ({ state }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-
-  const navigate = useNavigate();
+  const [error, setError] = useState("");
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const loginUserHandler = withAsyncHandler(
+  const loginHandler = withAsyncHandler(
     async (email, password) => {
       const res = await loginuser(email, password);
       return res.data;
     },
     {
       onError: (err) => {
-        setError(err.message || "Login failed. Please check your credentials.");
-      },
-      onFinally: () => {
-        setLoading(false);
+        setError("Login failed. Please check your credentials.", err);
       },
     }
   );
@@ -33,66 +29,56 @@ const LoginForm = ({ state }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    if (!email || !password) {
-      setError("Email and password are required.");
-      return;
-    }
-
     try {
-      const data = await loginUserHandler(email, password);
+      const data = await loginHandler(email, password);
       dispatch(login(data.user));
+      toast.success("Welcome back!");
       navigate({ to: "/dashboard" });
-    } catch (error) {
-      setError("Login failed: " + error.message);
+    } catch (err) {
+      setError("Invalid credentials",err);
+      toast.error("Login failed. Check your email or password.");
     }
   };
 
   return (
-    <div className="h-[90vh] bg-gray-100 flex justify-center items-center px-4">
-      <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-md transition-all">
-        <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">Sign In</h2>
+    <div className="min-h-[90vh] flex items-center justify-center bg-gray-50 px-4">
+      <div className="max-w-md w-full bg-white rounded-lg shadow-md p-6">
+        <h2 className="text-2xl font-bold text-center text-blue-600 mb-4">
+          Sign In
+        </h2>
+        {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
 
-        {error && (
-          <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md text-sm transition-all">
-            {error}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Email */}
+        <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-              Email Address
+            <label className="block text-sm font-medium text-gray-700">
+              Email
             </label>
             <input
               type="email"
-              id="email"
+              required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
               placeholder="you@example.com"
-              required
+              className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
-          {/* Password */}
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700">
               Password
             </label>
             <div className="relative">
               <input
                 type={showPassword ? "text" : "password"}
-                id="password"
+                required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
                 placeholder="••••••••"
-                required
+                className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
               />
               <button
                 type="button"
-                className="absolute inset-y-0 right-3 flex items-center text-sm text-gray-500"
+                className="absolute right-3 top-2 text-sm text-gray-500"
                 onClick={() => setShowPassword(!showPassword)}
               >
                 {showPassword ? "Hide" : "Show"}
@@ -100,30 +86,22 @@ const LoginForm = ({ state }) => {
             </div>
           </div>
 
-          {/* Submit */}
-          <div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-gradient-to-r from-blue-500 to-indigo-500 text-white py-2 px-4 rounded-md hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-blue-500 transition disabled:opacity-50"
-            >
-              {loading ? "Signing in..." : "Sign In"}
-            </button>
-          </div>
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
+          >
+            Sign In
+          </button>
         </form>
 
-        {/* Switch to Register */}
-        <div className="mt-6 text-center text-sm">
-          <p className="text-gray-600">
-            Don't have an account?{" "}
-            <button
-              type="button"
-              className="text-blue-500 hover:text-blue-700 font-medium transition"
-              onClick={() => state(false)}
-            >
-              Create an account
-            </button>
-          </p>
+        <div className="text-sm text-center mt-4">
+          Don’t have an account?{" "}
+          <button
+            className="text-blue-500 hover:underline"
+            onClick={() => state(false)}
+          >
+            Register
+          </button>
         </div>
       </div>
     </div>
