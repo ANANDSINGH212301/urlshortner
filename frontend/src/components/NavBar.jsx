@@ -1,81 +1,55 @@
-import React, { useState} from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../store/slice/authSlice.js";
 import { logoutuser } from "../Apis/user.api.js";
 import { withAsyncHandler } from "../utils/asyncWrapper.js";
+import { FaMoon, FaSun } from "react-icons/fa"; // optional dark mode icons
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
-  // Get auth state from Redux store
   const { isAuthenticated, user } = useSelector((state) => state.auth);
-  const username = user?.name || "User";
-  
-  const logoutHandler = withAsyncHandler(
-    async () => {
-      return await logoutuser();
-    },
-    {
-      onError: (err) => {
-        console.error("Logout failed:", err);
-      }
-    }
-  );
+  const username = user?.name?.split(" ")[0] || "User";
+
+  const logoutHandler = withAsyncHandler(async () => {
+    return await logoutuser();
+  }, {
+    onError: (err) => console.error("Logout failed:", err)
+  });
 
   const handleLogout = async () => {
     try {
-      // Call the logout API
       await logoutHandler();
-
-      // Dispatch logout action to Redux
       dispatch(logout());
-
-      // Navigate to home page
       navigate({ to: "/" });
     } catch (error) {
       console.error("Logout failed:", error);
     }
   };
 
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
   return (
-    <nav className="bg-white shadow-md">
+    <nav className="bg-white shadow-md sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
-          {/* Logo and brand */}
-          <div className="flex items-center">
-            <Link to="/" className="flex-shrink-0 flex items-center">
-              <svg
-                className="h-8 w-8 text-blue-500"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
-                />
-              </svg>
-              <span className="ml-2 text-xl font-bold text-gray-800">
-                URL Shortener
-              </span>
-            </Link>
-          </div>
+        <div className="flex justify-between h-16 items-center">
+          {/* Logo */}
+          <Link to="/" className="flex items-center space-x-2">
+            <svg className="h-8 w-8 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+            </svg>
+            <span className="text-xl font-bold text-gray-800">URL Shortener</span>
+          </Link>
 
-          {/* Desktop navigation */}
-          <div className="hidden sm:ml-6 sm:flex sm:items-center sm:space-x-4">
+          {/* Desktop Menu */}
+          <div className="hidden sm:flex items-center space-x-4">
             <Link
               to="/"
-              className="px-3 py-2 text-md font-medium text-gray-700 hover:text-blue-500 rounded-md underline"
-              activeProps={{ className: "text-blue-500" }}
+              className="text-gray-700 font-medium hover:text-blue-500 transition duration-200 underline"
+              activeProps={{ className: "text-blue-500 underline" }}
             >
               Home
             </Link>
@@ -83,78 +57,55 @@ const Navbar = () => {
             {isAuthenticated && (
               <Link
                 to="/dashboard"
-                className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-500 rounded-md"
-                activeProps={{ className: "text-blue-500" }}
+                className="text-gray-700 font-medium hover:text-blue-500 transition duration-200"
+                activeProps={{ className: "text-blue-500 underline" }}
               >
                 Dashboard
               </Link>
             )}
 
+            {/* Auth Buttons */}
             {isAuthenticated ? (
-              <div className="relative ml-3">
-                <div className="flex items-center">
-                  <span className="text-sm font-medium text-gray-700 mr-2">
-                    Hi, Mod !!
-                  </span>
-                  <button
-                    onClick={handleLogout}
-                    className="px-4 py-2 text-sm font-medium text-white bg-red-500 cursor-pointer rounded-md transition-colors"
-                  >
-                    Logout
-                  </button>
-                </div>
+              <div className="flex items-center space-x-3">
+                <span className="text-sm text-gray-600">Hi, {username}</span>
+                <button
+                  onClick={handleLogout}
+                  className="px-4 py-1 bg-red-500 text-white text-sm rounded-md hover:bg-red-600 transition"
+                >
+                  Logout
+                </button>
               </div>
             ) : (
               <Link
                 to="/auth"
-                className="px-4 py-2 text-sm font-medium text-white bg-blue-500 hover:bg-blue-600 rounded-md transition-colors"
+                className="px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-md text-sm hover:opacity-90 transition"
               >
                 Sign In
               </Link>
             )}
+
+            {/* Optional: Theme Toggle */}
+            {/* <button className="text-gray-600 hover:text-yellow-500 transition">
+              <FaMoon />
+            </button> */}
           </div>
 
-          {/* Mobile menu button */}
-          <div className="flex items-center sm:hidden">
+          {/* Mobile Menu Button */}
+          <div className="sm:hidden flex items-center">
             <button
               onClick={toggleMenu}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
-              aria-expanded="false"
+              className="p-2 rounded-md text-gray-600 hover:bg-gray-100 focus:outline-none"
             >
-              <span className="sr-only">Open main menu</span>
-              {/* Icon when menu is closed */}
-              {!isMenuOpen ? (
-                <svg
-                  className="block h-6 w-6"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  aria-hidden="true"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M4 6h16M4 12h16M4 18h16"
-                  />
+              <span className="sr-only">Open menu</span>
+              {isMenuOpen ? (
+                <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12" />
                 </svg>
               ) : (
-                /* Icon when menu is open */
-                <svg
-                  className="block h-6 w-6"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  aria-hidden="true"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
+                <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                    d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
               )}
             </button>
@@ -162,53 +113,49 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile menu, show/hide based on menu state */}
+      {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="sm:hidden">
-          <div className="pt-2 pb-3 space-y-1">
+        <div className="sm:hidden px-4 pb-4 space-y-2">
+          <Link
+            to="/"
+            className="block text-gray-700 font-medium hover:text-blue-500 transition"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            Home
+          </Link>
+
+          {isAuthenticated && (
             <Link
-              to="/"
-              className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-500 hover:bg-gray-50 rounded-md"
+              to="/dashboard"
+              className="block text-gray-700 font-medium hover:text-blue-500 transition"
               onClick={() => setIsMenuOpen(false)}
             >
-              Home
+              Dashboard
             </Link>
+          )}
 
-            {isAuthenticated && (
-              <Link
-                to="/dashboard"
-                className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-500 hover:bg-gray-50 rounded-md"
-                onClick={() => setIsMenuOpen(false)}
+          {isAuthenticated ? (
+            <>
+              <span className="block text-sm text-gray-600">Hi, {username}</span>
+              <button
+                onClick={() => {
+                  handleLogout();
+                  setIsMenuOpen(false);
+                }}
+                className="block text-left text-red-500 w-full"
               >
-                Dashboard
-              </Link>
-            )}
-
-            {isAuthenticated ? (
-              <>
-                <div className="px-3 py-2 text-base font-medium text-gray-700">
-                  Hi, {username}
-                </div>
-                <button
-                  onClick={() => {
-                    handleLogout();
-                    setIsMenuOpen(false);
-                  }}
-                  className="block w-full text-left px-3 py-2 text-base font-medium text-red-600 hover:bg-gray-50 rounded-md"
-                >
-                  Logout
-                </button>
-              </>
-            ) : (
-              <Link
-                to="/auth"
-                className="block px-3 py-2 text-base font-medium text-blue-600 hover:bg-gray-50 rounded-md"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Sign In
-              </Link>
-            )}
-          </div>
+                Logout
+              </button>
+            </>
+          ) : (
+            <Link
+              to="/auth"
+              className="block text-blue-600 font-medium"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Sign In
+            </Link>
+          )}
         </div>
       )}
     </nav>

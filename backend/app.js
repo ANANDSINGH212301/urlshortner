@@ -7,6 +7,7 @@ import cookieParser from "cookie-parser";
 import { attachUser } from "./src/utils/attachUser.js";
 import userRouter from "./src/routes/user.route.js";
 import cors from "cors";
+import helmet from "helmet";
 
 
 import dotenv from "dotenv";
@@ -16,7 +17,7 @@ dotenv.config("./.env")
 import express from "express"
 const app = express()
 app.use(cors({
-    origin: "http://localhost:5173",
+    origin: process.env.CLIENT_URL,
     credentials: true,
 }))
 
@@ -39,8 +40,10 @@ app.get("/:id", redirectFromShortUrl)
 // Handling Errors
 // Global error middleware
 app.use(errorHandler);
+app.use(helmet());
 
 app.listen(3000, () => {
     connectDB()
     console.log("Server is running on PORT 3000");
 })
+

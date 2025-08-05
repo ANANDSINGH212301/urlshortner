@@ -10,37 +10,28 @@ const UserLinks = () => {
   useEffect(() => {
     const fetchLinks = async () => {
       try {
-        setLoading(true);
         const data = await getUserUrls();
         setLinks(data.urls);
-        console.log(links)
         setError("");
       } catch (err) {
-        console.error("Failed to fetch user links:", err);
-        setError("Failed to load your links. Please try again later.");
+        setError("Failed to load your links.",err);
       } finally {
         setLoading(false);
       }
     };
-
     fetchLinks();
-  },[]);
+  }, []);
 
   const handleCopy = (url, id) => {
-    navigator.clipboard.writeText("http://localhost:3000/"+ url);
+    navigator.clipboard.writeText(`${window.location.origin}/${url}`);
     setCopiedId(id);
-    setTimeout(() => {
-      setCopiedId(null);
-    }, 2000);
+    setTimeout(() => setCopiedId(null), 2000);
   };
 
   if (loading) {
     return (
-      <div className="bg-white p-6 rounded-lg shadow-md h-[19.7rem] w-[25rem]">
-        <h2 className="text-xl font-semibold mb-4">Your Links</h2>
-        <div className="flex justify-center items-center h-40">
-          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-500"></div>
-        </div>
+      <div className="bg-white p-6 rounded-lg shadow-md h-[19.7rem] w-[25rem] flex justify-center items-center">
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-500"></div>
       </div>
     );
   }
@@ -49,9 +40,7 @@ const UserLinks = () => {
     return (
       <div className="bg-white p-6 rounded-lg shadow-md h-[19.7rem] w-[25rem]">
         <h2 className="text-xl font-semibold mb-4">Your Links</h2>
-        <div className="text-red-500 text-center p-4 bg-red-50 rounded-md">
-          {error}
-        </div>
+        <p className="text-red-500 text-center">{error}</p>
       </div>
     );
   }
@@ -59,26 +48,27 @@ const UserLinks = () => {
   return (
     <div className="bg-white p-6 rounded-lg shadow-md h-[19.7rem] w-[25rem] overflow-auto">
       <h2 className="text-xl font-semibold mb-4">Your Links</h2>
-      
+
       {links.length === 0 ? (
-        <div className="text-center text-gray-500 p-4">
-          You haven't created any links yet.
-        </div>
+        <p className="text-center text-gray-500">No links created yet.</p>
       ) : (
         <div className="space-y-3">
           {links.map((link) => (
-            <div 
-              key={link._id} 
-              className="p-3 border border-gray-200 rounded-md hover:bg-gray-50"
+            <div
+              key={link._id}
+              className="p-3 border border-gray-200 rounded-md hover:shadow-sm transition"
             >
-              <div className="flex justify-between items-start mb-2">
+              <div className="flex justify-between items-start">
                 <div className="truncate max-w-[70%]">
-                  <p className="text-sm font-medium text-blue-600 truncate">
+                  <a
+                    href={`${window.location.origin}/${link.short_url}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 text-sm hover:underline truncate"
+                  >
                     {link.short_url}
-                  </p>
-                  <p className="text-xs text-gray-500 truncate">
-                    {link.full_url}
-                  </p>
+                  </a>
+                  <p className="text-xs text-gray-500 truncate">{link.full_url}</p>
                 </div>
                 <button
                   onClick={() => handleCopy(link.short_url, link._id)}
@@ -91,7 +81,7 @@ const UserLinks = () => {
                   {copiedId === link._id ? "Copied!" : "Copy"}
                 </button>
               </div>
-              <div className="flex justify-between text-xs text-gray-500">
+              <div className="flex justify-between text-xs text-gray-500 mt-1">
                 <span>Clicks: {link.clicks || 0}</span>
               </div>
             </div>
