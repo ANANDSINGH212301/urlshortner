@@ -76,16 +76,6 @@ GET  /:id                  # Redirect to original URL
 ### Request/Response Examples
 
 **Create Short URL:**
-```bash
-curl -X POST http://localhost:3000/api/create \
-  -H "Content-Type: application/json" \
-  -d '{"url": "https://www.example.com"}'
-```
-
-**Response:**
-```
-http://localhost:3000/abc123
-```
 
 ## 🎯 Usage
 
