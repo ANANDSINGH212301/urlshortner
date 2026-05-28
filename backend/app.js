@@ -8,6 +8,9 @@ import { attachUser } from "./src/utils/attachUser.js";
 import userRouter from "./src/routes/user.route.js";
 import cors from "cors";
 import helmet from "helmet";
+import path from "path";
+import fs from "fs";
+import { fileURLToPath } from "url";
 
 
 import dotenv from "dotenv";
@@ -17,6 +20,10 @@ dotenv.config()
 import express from "express"
 const app = express()
 const PORT = process.env.PORT || 3000
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+const frontendDistPath = path.resolve(__dirname, "../frontend/dist")
+const frontendIndexPath = path.join(frontendDistPath, "index.html")
 
 app.use(helmet());
 app.use(cors({
@@ -39,6 +46,16 @@ app.use("/api/user", userRouter)
 
 //GET route - Redirection
 app.get("/:id", redirectFromShortUrl)
+
+if (fs.existsSync(frontendDistPath)) {
+    app.use(express.static(frontendDistPath))
+    app.get("*", (req, res, next) => {
+        if (req.path.startsWith("/api")) {
+            return next()
+        }
+        res.sendFile(frontendIndexPath)
+    })
+}
 
 // Handling Errors
 // Global error middleware

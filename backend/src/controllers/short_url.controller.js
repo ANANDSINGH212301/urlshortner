@@ -2,6 +2,8 @@ import { getshortUrl } from "../dao/short_url.js";
 import { shorturlServiceswithoutuser, shorturlServiceswithuser } from "../services/short_url.services.js";
 import AppError from "../utils/apperror1.js";
 
+const RESERVED_FRONTEND_ROUTES = new Set(["auth", "dashboard"]);
+
 export const createShortUrl = async (req, res, next) => {
     const { url } = req.body
     try {
@@ -22,6 +24,9 @@ export const redirectFromShortUrl = async (req, res, next) => {
     try {
         console.log("Redirecting short URL:", req.params.id)
         const { id } = req.params
+        if (RESERVED_FRONTEND_ROUTES.has(id)) {
+            return next()
+        }
         const url = await getshortUrl(id)
 
         if (url && url.full_url) {
