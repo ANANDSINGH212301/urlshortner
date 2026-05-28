@@ -27,7 +27,7 @@ const Url_form = () => {
       }
       setShortUrl(result);
     } catch (err) {
-      setError("Something went wrong. Please try again.",err);
+      setError(err?.message || "Something went wrong. Please try again.");
     }
   };
 

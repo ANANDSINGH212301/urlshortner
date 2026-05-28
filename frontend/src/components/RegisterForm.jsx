@@ -30,7 +30,7 @@ const RegisterForm = ({ state }) => {
     },
     {
       onError: (err) => {
-        setErrors({ form: "Registration failed. Try again.",err});
+        setErrors({ form: err?.message || "Registration failed. Try again." });
       },
     }
   );
@@ -43,10 +43,10 @@ const RegisterForm = ({ state }) => {
   dispatch(login(data.user));
   toast.success("Account created successfully!");
   navigate({ to: "/dashboard" });
-} catch (err) {
-  setErrors({ form: "Something went wrong.",err });
-  toast.error("Registration failed. Try again.");
-}
+    } catch (err) {
+      setErrors({ form: err?.message || "Something went wrong." });
+      toast.error("Registration failed. Try again.");
+    }
   };
 
   const handleChange = (e) => {

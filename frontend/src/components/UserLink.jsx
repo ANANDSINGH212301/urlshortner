@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { getUserUrls } from "../Apis/shorturl.api.js";
 
 const UserLinks = () => {
+  const baseUrl = import.meta.env.VITE_API_URL?.replace(/\/api\/?$/, "") || window.location.origin;
   const [links, setLinks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [copiedId, setCopiedId] = useState(null);
@@ -38,17 +39,17 @@ const UserLinks = () => {
           <div className="flex justify-between items-center">
             <div className="w-3/4 overflow-hidden">
               <a
-                href={link.short_url}
+                href={`${baseUrl}/${link.short_url}`}
                 target="_blank"
                 rel="noreferrer"
                 className="text-blue-600 font-medium hover:underline truncate block"
               >
-                {link.short_url}
+                {`${baseUrl}/${link.short_url}`}
               </a>
               <p className="text-sm text-gray-500 truncate">{link.full_url}</p>
             </div>
             <button
-              onClick={() => handleCopy(link.short_url, link._id)}
+              onClick={() => handleCopy(`${baseUrl}/${link.short_url}`, link._id)}
               className={`text-xs px-3 py-1 rounded-md ${
                 copiedId === link._id
                   ? "bg-green-500 text-white"

@@ -1,5 +1,6 @@
 import { getshortUrl } from "../dao/short_url.js";
 import { shorturlServiceswithoutuser, shorturlServiceswithuser } from "../services/short_url.services.js";
+import AppError from "../utils/apperror1.js";
 
 export const createShortUrl = async (req, res, next) => {
     const { url } = req.body
@@ -35,13 +36,11 @@ export const redirectFromShortUrl = async (req, res, next) => {
 }
 export const createCustomShortUrl = async (req, res, next) => {
     try {
-        const { url, slug } = req.body
-        let shorturl;
-        if (req.userId) {
-            shorturl = await shorturlServiceswithuser(url, req.userId, slug)
-        } else {
-            shorturl = await shorturlServiceswithoutuser(url, slug)
+        if (!req.userId) {
+            throw new AppError("Authentication required for custom URLs", 401)
         }
+        const { url, slug } = req.body
+        const shorturl = await shorturlServiceswithuser(url, req.userId, slug)
         res.send(process.env.APP_URL + shorturl)
     } catch (error) {
         next(error)

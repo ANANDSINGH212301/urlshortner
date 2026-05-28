@@ -21,7 +21,7 @@ const LoginForm = ({ state }) => {
     },
     {
       onError: (err) => {
-        setError("Login failed. Please check your credentials.", err);
+        setError(err?.message || "Login failed. Please check your credentials.");
       },
     }
   );
@@ -35,7 +35,7 @@ const LoginForm = ({ state }) => {
       toast.success("Welcome back!");
       navigate({ to: "/dashboard" });
     } catch (err) {
-      setError("Invalid credentials",err);
+      setError(err?.message || "Invalid credentials");
       toast.error("Login failed. Check your email or password.");
     }
   };

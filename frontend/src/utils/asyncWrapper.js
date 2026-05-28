@@ -5,7 +5,7 @@ export const withAsyncHandler = (asyncFn, options = {}) => {
     onSuccess,
     onError,
     onFinally,
-    rethrow = false
+    rethrow = true
   } = options;
 
   return async (...args) => {

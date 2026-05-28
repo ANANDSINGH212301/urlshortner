@@ -6,6 +6,7 @@ import { getUserUrl } from "../controllers/user.controller.js";
 const route = express.Router();
 
 route.post("/urls",authMiddleware, getUserUrl);
+route.get("/urls",authMiddleware, getUserUrl);
 
 
 export default route;
