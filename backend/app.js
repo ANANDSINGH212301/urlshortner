@@ -24,6 +24,17 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const frontendDistPath = path.resolve(__dirname, "../frontend/dist")
 const frontendIndexPath = path.join(frontendDistPath, "index.html")
+const hasFrontendBuild = fs.existsSync(frontendDistPath)
+
+const serveSpaRoute = (req, res) => {
+    if (hasFrontendBuild) {
+        return res.sendFile(frontendIndexPath)
+    }
+    if (process.env.CLIENT_URL) {
+        return res.redirect(`${process.env.CLIENT_URL}${req.path}`)
+    }
+    return res.status(404).json({ message: "Frontend build not found. Run frontend build or set CLIENT_URL." })
+}
 
 app.use(helmet());
 app.use(cors({
@@ -46,8 +57,9 @@ app.use("/api/user", userRouter)
 
 //GET route - Redirection
 app.get("/:id", redirectFromShortUrl)
+app.get(["/auth", "/dashboard"], serveSpaRoute)
 
-if (fs.existsSync(frontendDistPath)) {
+if (hasFrontendBuild) {
     app.use(express.static(frontendDistPath))
     app.get("*", (req, res, next) => {
         if (req.path.startsWith("/api")) {
