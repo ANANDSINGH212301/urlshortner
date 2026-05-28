@@ -11,11 +11,14 @@ import helmet from "helmet";
 
 
 import dotenv from "dotenv";
-dotenv.config("./.env")
+dotenv.config()
 
 
 import express from "express"
 const app = express()
+const PORT = process.env.PORT || 3000
+
+app.use(helmet());
 app.use(cors({
     origin: process.env.CLIENT_URL,
     credentials: true,
@@ -40,10 +43,17 @@ app.get("/:id", redirectFromShortUrl)
 // Handling Errors
 // Global error middleware
 app.use(errorHandler);
-app.use(helmet());
+const startServer = async () => {
+    try {
+        await connectDB()
+        app.listen(PORT, () => {
+            console.log(`Server is running on PORT ${PORT}`)
+        })
+    } catch (error) {
+        console.error("Failed to start server:", error.message)
+        process.exit(1)
+    }
+}
 
-app.listen(3000, () => {
-    connectDB()
-    console.log("Server is running on PORT 3000");
-})
+startServer()
 

@@ -1,6 +1,5 @@
 import { verifyToken } from "./helper.js"
 import { findUserById } from "../dao/user.dao.js"
-import { decode } from "jsonwebtoken"
 
 
 export const attachUser = async(req,res, next) =>{

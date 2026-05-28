@@ -3,17 +3,17 @@ import mongoose from "mongoose";
 const shorturlmodel = new mongoose.Schema({
     full_url:{
         type: String,
-        require: true
+        required: true
     },
     short_url:{
         type: String,
-        require: true,
+        required: true,
         index: true,
         unique: true,
     },
     clicks:{
         type: Number,
-        require: true,
+        required: true,
         default: 0,
     },
     user:{
