@@ -11,7 +11,8 @@ export const createShortUrl = async (req, res, next) => {
         } else {
             shorturl = await shorturlServiceswithoutuser(url)
         }
-        res.send(process.env.APP_URL + shorturl)
+        const appUrl = (process.env.APP_URL || "").replace(/\/+$/, "")
+        res.send(`${appUrl}/${shorturl}`)
     } catch (error) {
         next(error)
     }
@@ -41,7 +42,8 @@ export const createCustomShortUrl = async (req, res, next) => {
         }
         const { url, slug } = req.body
         const shorturl = await shorturlServiceswithuser(url, req.userId, slug)
-        res.send(process.env.APP_URL + shorturl)
+        const appUrl = (process.env.APP_URL || "").replace(/\/+$/, "")
+        res.send(`${appUrl}/${shorturl}`)
     } catch (error) {
         next(error)
     }
