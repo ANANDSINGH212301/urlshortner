@@ -30,10 +30,10 @@ export const redirectFromShortUrl = async (req, res, next) => {
         const url = await getshortUrl(id)
 
         if (url && url.full_url) {
-            res.redirect(url.full_url);
+            return res.redirect(url.full_url);
         } else {
-            console.log("URL not found for ID:", id)
-            res.status(404).send("Short URL not found")
+            console.log("URL not found for ID:", id, "- falling back to frontend SPA.")
+            next()
         }
     } catch (error) {
         console.error("Error in redirectFromShortUrl:", error)
